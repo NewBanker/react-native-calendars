@@ -381,7 +381,7 @@ class ExpandableCalendar extends Component {
   };
 
   onVisibleMonthsChange = value => {
-    if (this.visibleMonth !== _.first(value).month) {
+    if (_.first(value) && this.visibleMonth !== _.first(value).month) {
       this.visibleMonth = _.first(value).month; // equivalent to this.getMonth(value[0].dateString)
 
       // for horizontal scroll
