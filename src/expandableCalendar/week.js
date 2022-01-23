@@ -10,7 +10,7 @@ import {extractComponentProps} from '../component-updater';
 import styleConstructor from './style';
 import Calendar from '../calendar';
 import Day from '../calendar/day/index';
-// import BasicDay from '../calendar/day/basic';
+import BasicDay from '../calendar/day/basic';
 
 class Week extends PureComponent {
   static displayName = 'IGNORE';
@@ -31,9 +31,30 @@ class Week extends PureComponent {
     return dateutils.getWeekDates(date, this.props.firstDay);
   }
 
-  // renderWeekNumber (weekNumber) {
-  //   return <BasicDay key={`week-${weekNumber}`} theme={this.props.theme} marking={{disableTouchEvent: true}} state='disabled'>{weekNumber}</BasicDay>;
-  // }
+  renderWeekNumber(weekNumber) {
+    return (
+      <BasicDay
+        key={`week-${weekNumber}`}
+        theme={this.props.theme}
+        marking={{disableTouchEvent: true}}
+        state="disabled"
+      >
+        {weekNumber}
+      </BasicDay>
+    );
+  }
+
+  renderWeekNumberCustom = day => {
+    if (this.props.weekComponent) {
+      const WeekComponent = this.props.weekComponent;
+      const dayProps = extractComponentProps(Day, this.props);
+      return (
+        <View style={this.style.dayContainer} key={`week-container-${day.getWeek()}`}>
+          <WeekComponent {...dayProps} date={day}></WeekComponent>
+        </View>
+      );
+    }
+  };
 
   renderDay(day, id) {
     const {current, hideExtraDays, markedDates} = this.props;
@@ -71,9 +92,13 @@ class Week extends PureComponent {
       }, this);
     }
 
-    // if (this.props.showWeekNumbers) {
-    //   week.unshift(this.renderWeekNumber(item[item.length - 1].getWeek()));
-    // }
+    if (dates && this.props.showWeekNumbers) {
+      if (this.props.weekComponent) {
+        week.unshift(this.renderWeekNumberCustom(dates[dates.length - 1]));
+      } else {
+        week.unshift(this.renderWeekNumber(dates[dates.length - 1].getWeek()));
+      }
+    }
 
     return (
       <View style={this.style.container}>

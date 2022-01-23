@@ -22,13 +22,16 @@ export default class Day extends Component {
     /** The day to render */
     day: PropTypes.object,
     /** Provide custom day rendering component */
-    dayComponent: PropTypes.any
+    dayComponent: PropTypes.any,
+    /** Provide custom week rendering component */
+    weekComponent: PropTypes.any
   };
 
   shouldComponentUpdate(nextProps) {
     return shouldUpdate(this.props, nextProps, [
       'day',
       'dayComponent',
+      'weekComponent',
       'state',
       'markingType',
       'marking',
