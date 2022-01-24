@@ -157,6 +157,22 @@ class Calendar extends Component {
     this.header.onPressLeft();
   };
 
+  renderWeekNumberCustom = day => {
+    if (this.props.weekComponent) {
+      const WeekComponent = this.props.weekComponent;
+      const dayProps = extractComponentProps(Day, this.props);
+      return (
+        <View style={[this.style.dayContainer]} key={`week-container-${day.getWeek()}`}>
+          <WeekComponent
+            {...dayProps}
+            date={day}
+            state={getState(day, this.state.currentMonth, this.props)}
+          ></WeekComponent>
+        </View>
+      );
+    }
+  };
+
   renderWeekNumber = memoize(weekNumber => {
     return (
       <View style={this.style.dayContainer} key={`week-container-${weekNumber}`}>
@@ -203,7 +219,11 @@ class Calendar extends Component {
     }, this);
 
     if (this.props.showWeekNumbers) {
-      week.unshift(this.renderWeekNumber(days[days.length - 1].getWeek()));
+      if (this.props.weekComponent) {
+        week.unshift(this.renderWeekNumberCustom(days[days.length - 1]));
+      } else {
+        week.unshift(this.renderWeekNumber(days[days.length - 1].getWeek()));
+      }
     }
 
     return (
